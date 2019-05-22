@@ -80,7 +80,6 @@ export default class Game {
                 ctx.fillStyle = "black";
                 ctx.textAlign = "left";
                 ctx.fillText("Lives: " + this.lives.toString(), 10, 20);
-                ctx.clear();
                 break;
             case GAMESTATE.PAUSED:
                 ctx.rect(0, 0, this.gameWidth, this.gameHeight);
@@ -91,7 +90,6 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("Paused", this.gameWidth / 2, this.gameHeight / 2);
-                ctx.clear();
                 break;
             case GAMESTATE.MENU:
                 ctx.fillStyle = 'rgb(1,1,1,1)';
@@ -101,7 +99,6 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("Press SPACE to play", this.gameWidth / 2, this.gameHeight / 2);
-                ctx.clear();
                 break;
             case GAMESTATE.GAME_OVER:
                 ctx.fillStyle = 'rgb(1,1,1,1)';
@@ -111,7 +108,6 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("GAME OVER!", this.gameWidth / 2, this.gameHeight / 2);
-                ctx.clear();
                 break;
             case GAMESTATE.VICTORY:
                 ctx.fillStyle = "rgba(255,0,0, 0.5)";
@@ -121,7 +117,6 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("You won!", this.gameWidth / 2, this.gameHeight / 2);
-                ctx.clear();
                 break;
 
         }
