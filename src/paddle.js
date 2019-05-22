@@ -28,8 +28,6 @@ export default class Paddle {
 
     moveLeft() {
         this.speed = -this.maxSpeed;
-        console.log(this.position.x);
-
     }
 
     moveRight() {

@@ -1,36 +1,138 @@
 import Paddle from "./paddle.js";
 import Ball from "./bal.js";
 import InputHandler from "./input.js";
-import {level1, buildLevel} from "./levels.js";
+import {level1, level2, buildLevel} from "./levels.js";
+
+export const GAMESTATE = {
+    PAUSED: 0,
+    RUNNING: 1,
+    MENU: 2,
+    GAME_OVER: 3,
+    CHANGE_LEVEL: 4,
+    VICTORY: 5
+};
+
 
 export default class Game {
     constructor(gamewidth, gameHeight) {
         this.gameWidth = gamewidth;
         this.gameHeight = gameHeight;
-    }
 
-    start() {
+        this.gameState = GAMESTATE.MENU;
         this.paddle = new Paddle(this);
         this.ball = new Ball(this);
+        this.gameObjects = [];
+        this.bricks = [];
+        this.levels = [level1, level2];
 
+
+        this.lives = 3;
+        this.currentLevel = 0;
+
+        new InputHandler(this.paddle, this);
+    }
+
+
+    start() {
+
+        if (this.gameState !== GAMESTATE.MENU && this.gameState !== GAMESTATE.CHANGE_LEVEL) return;
+
+        this.bricks = [...buildLevel(this, this.levels[this.currentLevel])];
+
+        this.ball.reset();
 
         this.gameObjects = [
             this.ball,
-            this.paddle,
-            ...buildLevel(this, level1)
+            this.paddle
         ];
 
-        new InputHandler(this.paddle);
+        this.gameState = GAMESTATE.RUNNING;
     }
 
     update(deltaTime) {
-        this.gameObjects.forEach((object) => object.update(deltaTime));
 
-        this.gameObjects = this.gameObjects.filter(object => !object.markedForDeletion);
+        if (this.lives <= 0) this.gameState = GAMESTATE.GAME_OVER;
+
+        switch (this.gameState) {
+            case GAMESTATE.PAUSED || GAMESTATE.MENU || GAMESTATE.GAME_OVER:
+                return;
+            case GAMESTATE.RUNNING:
+                [...this.gameObjects, ...this.bricks].forEach((object) => object.update(deltaTime));
+                this.bricks = this.bricks.filter(brick => !brick.markedForDeletion);
+
+                if (this.bricks.length === 0) {
+                    this.currentLevel++;
+                    if (this.currentLevel >= this.levels.length)
+                        this.gameState = GAMESTATE.VICTORY;
+                    else
+                        this.gameState = GAMESTATE.CHANGE_LEVEL;
+                    this.start();
+                }
+        }
     }
 
     draw(ctx) {
-        this.gameObjects.forEach((object) => object.draw(ctx));
+
+        switch (this.gameState) {
+            case GAMESTATE.RUNNING:
+                [...this.gameObjects, ...this.bricks].forEach((object) => object.draw(ctx));
+                ctx.font = "15px Arial";
+                ctx.fillStyle = "black";
+                ctx.textAlign = "left";
+                ctx.fillText("Lives: " + this.lives.toString(), 10, 20);
+                ctx.clear();
+                break;
+            case GAMESTATE.PAUSED:
+                ctx.rect(0, 0, this.gameWidth, this.gameHeight);
+                ctx.fillStyle = "rgba(0, 0, 0, .5)";
+                ctx.fill();
+
+                ctx.font = "30px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("Paused", this.gameWidth / 2, this.gameHeight / 2);
+                ctx.clear();
+                break;
+            case GAMESTATE.MENU:
+                ctx.fillStyle = 'rgb(1,1,1,1)';
+                ctx.fillRect(0, 0, this.gameWidth, this.gameHeight);
+
+                ctx.font = "30px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("Press SPACE to play", this.gameWidth / 2, this.gameHeight / 2);
+                ctx.clear();
+                break;
+            case GAMESTATE.GAME_OVER:
+                ctx.fillStyle = 'rgb(1,1,1,1)';
+                ctx.fillRect(0, 0, this.gameWidth, this.gameHeight);
+
+                ctx.font = "30px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("GAME OVER!", this.gameWidth / 2, this.gameHeight / 2);
+                ctx.clear();
+                break;
+            case GAMESTATE.VICTORY:
+                ctx.fillStyle = "rgba(255,0,0, 0.5)";
+                ctx.fillRect(0, 0, this.gameWidth, this.gameHeight);
+
+                ctx.font = "30px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.fillText("You won!", this.gameWidth / 2, this.gameHeight / 2);
+                ctx.clear();
+                break;
+
+        }
+    }
+
+    togglePause() {
+        if (this.gameState === GAMESTATE.PAUSED)
+            this.gameState = GAMESTATE.RUNNING;
+        else if (this.gameState === GAMESTATE.RUNNING) {
+            this.gameState = GAMESTATE.PAUSED;
+        }
     }
 
 }

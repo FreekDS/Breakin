@@ -1,7 +1,5 @@
 export default function detectCollision(ball, gameObject) {
 
-
-    // Paddle collision
     let bottomOfBall = ball.position.y + ball.size;
     let topOfBall = ball.position.y;
 

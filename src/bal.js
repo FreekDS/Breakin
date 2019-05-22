@@ -3,9 +3,9 @@ import detectCollision from "./collisionDetection.js"
 export default class Ball {
     constructor(game) {
         this.image = document.getElementById('img-bal');
-        this.position = {x: 10, y: 400};
-        this.speed = {x: 6, y: -4};
         this.size = 16;
+
+        this.reset();
 
         this.game = game;
 
@@ -23,13 +23,24 @@ export default class Ball {
         // Bound checks
         if (this.position.x + this.size > this.bounds.width || this.position.x < 0)
             this.speed.x = -this.speed.x;
-        if (this.position.y + this.size > this.bounds.height || this.position.y < 0)
+        // bottom of game
+        if (this.position.y + this.size > this.bounds.height) {
+            this.game.lives--;
+            this.reset();
+        }
+        if (this.position.y < 0)
             this.speed.y = -this.speed.y;
 
+
         // Paddle collision
-        if(detectCollision(this, this.game.paddle)) {
+        if (detectCollision(this, this.game.paddle)) {
             this.speed.y = -this.speed.y;
             this.position.y = this.game.paddle.position.y - this.size;
         }
+    }
+
+    reset(){
+        this.position = {x: 10, y: 400};
+        this.speed = {x: 6, y: -4};
     }
 }
