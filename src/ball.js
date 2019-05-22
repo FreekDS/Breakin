@@ -61,6 +61,8 @@ export default class Ball {
                 this.speed.x = -this.speed.x;
             } else
                 this.speed.x = randFloat(min, max) * this.default_speed_x;
+
+            this.game.audioHandler.playSound("shoot");
         }
 
     }

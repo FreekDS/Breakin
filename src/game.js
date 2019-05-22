@@ -2,6 +2,7 @@ import Paddle from "./paddle.js";
 import Ball from "./ball.js";
 import InputHandler from "./input.js";
 import {level1, level2, buildLevel} from "./levels.js";
+import AudioHandler from "./audio.js"
 
 export const GAMESTATE = {
     PAUSED: 0,
@@ -30,6 +31,15 @@ export default class Game {
         this.currentLevel = 0;
 
         new InputHandler(this.paddle, this);
+        this.audioHandler = new AudioHandler();
+
+        this.loadSounds();
+    }
+
+
+    loadSounds() {
+        this.audioHandler.addSound("./assets/sound/break.ogg", "break");
+        this.audioHandler.addSound("./assets/sound/shoot.mp3", "shoot");
     }
 
 
