@@ -1,5 +1,5 @@
 import Paddle from "./paddle.js";
-import Ball from "./bal.js";
+import Ball from "./ball.js";
 import InputHandler from "./input.js";
 import {level1, level2, buildLevel} from "./levels.js";
 
@@ -82,7 +82,7 @@ export default class Game {
                 ctx.fillText("Lives: " + this.lives.toString(), 10, 20);
                 break;
             case GAMESTATE.PAUSED:
-                ctx.fillStyle = "rgba(10,10,10, 0.5)";
+                ctx.fillStyle = "rgb(10,10,10, 0.5)";
                 ctx.rect(0, 0, this.gameWidth, this.gameHeight);
                 ctx.fill();
 
