@@ -82,8 +82,8 @@ export default class Game {
                 ctx.fillText("Lives: " + this.lives.toString(), 10, 20);
                 break;
             case GAMESTATE.PAUSED:
+                ctx.fillStyle = "rgba(10,10,10, 0.5)";
                 ctx.rect(0, 0, this.gameWidth, this.gameHeight);
-                ctx.fillStyle = "rgba(0, 0, 0, .5)";
                 ctx.fill();
 
                 ctx.font = "30px Arial";
