@@ -9,7 +9,7 @@ export default class AudioHandler {
         let audio = new Audio(path_to_sound);
         if(loop) {
             audio.loop = true;
-            audio.volume = 0.2;
+            audio.volume = 0.4;
             audio.load();
         }
         this.sounds[name] = audio;
