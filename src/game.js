@@ -39,7 +39,8 @@ export default class Game {
             "Song of Fire and Ice 8 bit",
             "Dva Vodka",
             "Winx Club Theme (Voor de Jochen)",
-            "Tunak Tunak Tun"
+            "Tunak Tunak Tun",
+            "Mario Bros 8 bit"
         ];
 
         this.currentTheme = 0;
@@ -53,6 +54,7 @@ export default class Game {
         this.audioHandler.addTheme("./assets/sound/themes/dvaVodka.mp3");
         this.audioHandler.addTheme("./assets/sound/themes/winx.mp3");
         this.audioHandler.addTheme("./assets/sound/themes/tunaktunak.mp3");
+        this.audioHandler.addTheme("./assets/sound/themes/mario.mp3");
     }
 
     stopped(){
