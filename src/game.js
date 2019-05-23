@@ -26,7 +26,7 @@ export default class Game {
         this.bricks = [];
         this.levels = [level1, level2];
 
-        this.lives = 1;
+        this.lives = 3;
         this.maxLives = 3;
         this.currentLevel = 0;
 
