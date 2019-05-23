@@ -26,25 +26,45 @@ export default class Game {
         this.bricks = [];
         this.levels = [level1, level2];
 
-
-        this.lives = 3;
+        this.lives = 1;
+        this.maxLives = 3;
         this.currentLevel = 0;
 
         new InputHandler(this.paddle, this);
         this.audioHandler = new AudioHandler();
 
         this.loadSounds();
+
+        this.themes = [
+            "Song of Fire and Ice 8 bit",
+            "Dva Vodka"
+        ];
+
+        this.currentTheme = 0;
     }
 
 
     loadSounds() {
         this.audioHandler.addSound("./assets/sound/break.ogg", "break");
         this.audioHandler.addSound("./assets/sound/shoot.mp3", "shoot");
+        this.audioHandler.addTheme("./assets/sound/themes/8bitGOT.mp3");
+        this.audioHandler.addTheme("./assets/sound/themes/dvaVodka.mp3");
+    }
+
+    stopped(){
+        return this.gameState === GAMESTATE.GAME_OVER || this.gameState === GAMESTATE.VICTORY;
     }
 
 
-    start() {
+    restart(){
+        this.gameState = GAMESTATE.MENU;
+        this.currentLevel = 0;
+        this.lives = this.maxLives;
+        console.log("hoi");
+        this.start();
+    }
 
+    start() {
         if (this.gameState !== GAMESTATE.MENU && this.gameState !== GAMESTATE.CHANGE_LEVEL) return;
 
         this.bricks = [...buildLevel(this, this.levels[this.currentLevel])];
@@ -56,7 +76,18 @@ export default class Game {
             this.paddle
         ];
 
+        this.audioHandler.playTheme(this.currentTheme);
+
         this.gameState = GAMESTATE.RUNNING;
+    }
+
+
+    isPlaying() {
+        return this.gameState === GAMESTATE.RUNNING;
+    }
+
+    inMenu() {
+        return this.gameState !== GAMESTATE.RUNNING && this.gameState !== GAMESTATE.CHANGE_LEVEL;
     }
 
     update(deltaTime) {
@@ -86,6 +117,7 @@ export default class Game {
         switch (this.gameState) {
             case GAMESTATE.RUNNING:
                 [...this.gameObjects, ...this.bricks].forEach((object) => object.draw(ctx));
+
                 ctx.font = "15px Arial";
                 ctx.fillStyle = "black";
                 ctx.textAlign = "left";
@@ -100,6 +132,11 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("Paused", this.gameWidth / 2, this.gameHeight / 2);
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
                 break;
             case GAMESTATE.MENU:
                 ctx.fillStyle = 'rgb(1,1,1,1)';
@@ -109,6 +146,11 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("Press SPACE to play", this.gameWidth / 2, this.gameHeight / 2);
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
                 break;
             case GAMESTATE.GAME_OVER:
                 ctx.fillStyle = 'rgb(1,1,1,1)';
@@ -118,6 +160,18 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("GAME OVER!", this.gameWidth / 2, this.gameHeight / 2);
+                ctx.font = "15px Arial";
+                ctx.fillText("Press space to play again!", this.gameWidth / 2, this.gameHeight / 2 + 50);
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
                 break;
             case GAMESTATE.VICTORY:
                 ctx.fillStyle = "rgba(255,0,0, 0.5)";
@@ -127,9 +181,33 @@ export default class Game {
                 ctx.fillStyle = "white";
                 ctx.textAlign = "center";
                 ctx.fillText("You won!", this.gameWidth / 2, this.gameHeight / 2);
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
+
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
                 break;
 
         }
+    }
+
+    prevTheme() {
+        this.currentTheme--;
+        if (this.currentTheme < 0)
+            this.currentTheme = this.themes.length - 1;
+        this.audioHandler.playTheme(this.currentTheme);
+    }
+
+    nextTheme() {
+        this.currentTheme++;
+        if (this.currentTheme >= this.themes.length)
+            this.currentTheme = 0;
+        this.audioHandler.playTheme(this.currentTheme);
     }
 
     togglePause() {
