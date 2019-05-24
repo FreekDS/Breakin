@@ -17,7 +17,6 @@ export default class Brick {
 
     update(deltaTime) {
         if (detectCollision(this.game.ball, this)) {
-            this.game.ball.speed.y = -this.game.ball.speed.y;
             this.markedForDeletion = true;
             this.game.audioHandler.playSound("break");
         }

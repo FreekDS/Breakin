@@ -66,7 +66,6 @@ export default class Game {
         this.gameState = GAMESTATE.MENU;
         this.currentLevel = 0;
         this.lives = this.maxLives;
-        console.log("hoi");
         this.start();
     }
 
@@ -78,8 +77,7 @@ export default class Game {
         this.ball.reset();
 
         this.gameObjects = [
-            this.ball,
-            this.paddle
+            this.ball
         ];
 
         this.audioHandler.playTheme(this.currentTheme);
@@ -104,7 +102,7 @@ export default class Game {
             case GAMESTATE.PAUSED || GAMESTATE.MENU || GAMESTATE.GAME_OVER:
                 return;
             case GAMESTATE.RUNNING:
-                [...this.gameObjects, ...this.bricks].forEach((object) => object.update(deltaTime));
+                [...this.gameObjects, ...this.bricks, this.paddle].forEach((object) => object.update(deltaTime));
                 this.bricks = this.bricks.filter(brick => !brick.markedForDeletion);
 
                 if (this.bricks.length === 0) {
@@ -113,24 +111,23 @@ export default class Game {
                         this.gameState = GAMESTATE.VICTORY;
                     else
                         this.gameState = GAMESTATE.CHANGE_LEVEL;
+                    this.lives++;
                     this.start();
                 }
         }
     }
 
     draw(ctx) {
-
+        [...this.gameObjects, ...this.bricks, this.paddle].forEach((object) => object.draw(ctx));
         switch (this.gameState) {
             case GAMESTATE.RUNNING:
-                [...this.gameObjects, ...this.bricks].forEach((object) => object.draw(ctx));
-
                 ctx.font = "15px Arial";
                 ctx.fillStyle = "black";
                 ctx.textAlign = "left";
                 ctx.fillText("Lives: " + this.lives.toString(), 10, 20);
                 break;
             case GAMESTATE.PAUSED:
-                ctx.fillStyle = "rgb(10,10,10, 0.5)";
+                ctx.fillStyle = "rgba(0,0,0, 0.5)";
                 ctx.rect(0, 0, this.gameWidth, this.gameHeight);
                 ctx.fill();
 
@@ -159,7 +156,7 @@ export default class Game {
                 ctx.fillText("Current theme: " + this.themes[this.currentTheme], 8, 25);
                 break;
             case GAMESTATE.GAME_OVER:
-                ctx.fillStyle = 'rgb(1,1,1,1)';
+                ctx.fillStyle = 'rgb(1,1,1,0.80)';
                 ctx.fillRect(0, 0, this.gameWidth, this.gameHeight);
 
                 ctx.font = "30px Arial";

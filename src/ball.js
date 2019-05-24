@@ -8,9 +8,9 @@ export default class Ball {
 
         this.default_speed_x = 6;
 
-        this.reset();
-
         this.game = game;
+
+        this.reset();
 
         this.bounds = {width: game.gameWidth, height: game.gameHeight};
     }
@@ -24,15 +24,23 @@ export default class Ball {
         this.position.y += this.speed.y;
 
         // Bound checks
-        if (this.position.x + this.size > this.bounds.width || this.position.x < 0)
+        if(this.position.x + this.size >= this.bounds.width){
+            this.position.x = this.bounds.width - this.size;
             this.speed.x = -this.speed.x;
+        }
+        if (this.position.x < 0) {
+            this.position.x = 0;
+            this.speed.x = -this.speed.x;
+        }
         // bottom of game
-        if (this.position.y + this.size > this.bounds.height) {
+        if (this.position.y + 1.5 * this.size >= this.bounds.height) {
             this.game.lives--;
             this.reset();
         }
-        if (this.position.y < 0)
+        if (this.position.y < 0){
             this.speed.y = -this.speed.y;
+            this.position.y = 0;
+        }
 
         // Paddle collision
         this.doPaddleCollision();
@@ -44,7 +52,7 @@ export default class Ball {
     }
 
     doPaddleCollision() {
-        if (detectCollision(this, this.game.paddle)) {
+        if (detectCollision(this, this.game.paddle, true)) {
             this.speed.y = -this.speed.y;
             this.position.y = this.game.paddle.position.y - this.size;
 
