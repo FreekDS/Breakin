@@ -26,6 +26,8 @@ export default class Game {
         this.bricks = [];
         this.levels = [level1, level2];
 
+        this.background = document.getElementById('bg');
+
         this.lives = 3;
         this.maxLives = 3;
         this.currentLevel = 0;
@@ -118,11 +120,14 @@ export default class Game {
     }
 
     draw(ctx) {
+
+        ctx.drawImage(this.background, 0, 0, this.gameWidth, this.gameHeight);
+
         [...this.gameObjects, ...this.bricks, this.paddle].forEach((object) => object.draw(ctx));
         switch (this.gameState) {
             case GAMESTATE.RUNNING:
                 ctx.font = "15px Arial";
-                ctx.fillStyle = "black";
+                ctx.fillStyle = "white";
                 ctx.textAlign = "left";
                 ctx.fillText("Lives: " + this.lives.toString(), 10, 20);
                 break;
